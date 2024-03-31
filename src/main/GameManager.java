@@ -1,6 +1,6 @@
 package main;
 
-public class GameManager { // FIX CLIPPING SYSTEM, SOME TRIANGLES NOT RENDERING
+public class GameManager { // collision/clipping system a bit wonky, you can clip through concave corners
 
     private UI ui = new UI(this);
 

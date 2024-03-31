@@ -20,6 +20,8 @@ public class Obj {
     private LinesComponent lc;
     private LinkedList<Triangle> toRender;
     private Mat4x4 pm, rzm, rxm, rym; // projection matrix, z axis rotation matrix, and x axis rotation
+    private boolean isTriCollide;
+    private Triangle collidingTri;
 
     public Obj(LinesComponent lc) {
         toRender = new LinkedList<Triangle> ();
@@ -33,8 +35,13 @@ public class Obj {
         rzm.rotationZ4x4(0.0f);
         rxm.rotationX4x4(0.0f);
         rym.rotationY4x4(0.0f);
+
+        collidingTri = new Triangle();
+        isTriCollide = false;
     }
 
+    public boolean isTriCollide() { return isTriCollide; }
+    public Triangle getCollidingTri() { return collidingTri; }
     public Vector3[] getPoints() { return points; }
     public Triangle[] getTriangles() {
         return triangles;
@@ -72,6 +79,7 @@ public class Obj {
     }
 
     public void projectObject(Camera vCamera, float fTheta) {
+        boolean collisionCycle = false;
         toRender.clear();
         lc.clearLines();
 
@@ -105,8 +113,8 @@ public class Obj {
                 Triangle.illuminateTriangle(light_direction, normal, triViewed);
 
                 if (collisionCheck(vCamera.getCamera(), triTranslated, 0.1f)) {
-                    triViewed.setColor(Color.RED);
-//                        System.out.println("collision!");
+                    collisionCycle = true;
+//                    triViewed.setColor(Color.RED);
                 }
 
                 // Convert world space into view space
@@ -142,6 +150,7 @@ public class Obj {
                 }
             }
         }
+        isTriCollide = collisionCycle;
 
         toRender.sort(new Comparator<Triangle>() {
             @Override
@@ -206,9 +215,10 @@ public class Obj {
         tri.setP3(Mat4x4.multiplyMatrix(tri.getP3(), pm));
     }
 
-    public static boolean collisionCheck(Vector3 point, Triangle tri, float thresh) {
+    public boolean collisionCheck(Vector3 point, Triangle tri, float thresh) {
 //        System.out.printf("%f %f\n", distToTriangle(point, tri.getP1(), tri.getP2(), tri.getP3()), thresh);
         if (distToTriangle(point, tri.getP1(), tri.getP2(), tri.getP3()) <= thresh) {
+            collidingTri.copy(tri);
             return true;
         }
         return false;

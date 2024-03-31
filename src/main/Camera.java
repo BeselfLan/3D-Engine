@@ -1,5 +1,6 @@
 package main;
 
+import Containers.Triangle;
 import Containers.Vector3;
 import MathStuff.Mat4x4;
 
@@ -68,5 +69,11 @@ public class Camera {
         // make view matrix from camera
         matView.setMatrix(Mat4x4.quickInverse(matCamera));
 //        matView.printMatrix();
+    }
+
+    public static Vector3 projectToPlane(Vector3 v, Triangle tri) {
+        Vector3 n = Triangle.findNormal(tri);
+        Vector3 vProjN = Vector3.mul(n, (float) (Vector3.dotProduct(v, n) / Math.pow(Vector3.dotProductSelf(n), 2.0)));
+        return Vector3.sub(v, vProjN);
     }
 }

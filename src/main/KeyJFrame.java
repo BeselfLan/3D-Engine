@@ -42,6 +42,13 @@ public class KeyJFrame extends JFrame implements KeyListener{
 //                    System.out.println(keyCode);
                     Vector3 vForward = Vector3.mul(ui.getMainCamera().getLookDir(), 0.1f);
                     Vector3 vSide = Vector3.mul(ui.getMainCamera().getSideDir(), 0.1f);
+                    Vector3 vUp = Vector3.mul(Vector3.crossProduct(vForward, vSide), 10.0f); // update this if want to add up/down looking
+
+                    if (ui.getSpaceShip().isTriCollide()) {
+                        vForward = Camera.projectToPlane(vForward, ui.getSpaceShip().getCollidingTri());
+                        vSide = Camera.projectToPlane(vSide, ui.getSpaceShip().getCollidingTri());
+                        vUp = Camera.projectToPlane(vUp, ui.getSpaceShip().getCollidingTri());
+                    }
                     switch(keyCode) {
                         case KeyEvent.VK_W: ui.getMainCamera().getCamera().setVector3(Vector3.add(ui.getMainCamera().getCamera(), vForward)); break;
                         case KeyEvent.VK_S: ui.getMainCamera().getCamera().setVector3(Vector3.sub(ui.getMainCamera().getCamera(), vForward)); break;
@@ -49,8 +56,8 @@ public class KeyJFrame extends JFrame implements KeyListener{
                         case KeyEvent.VK_D: ui.getMainCamera().getCamera().setVector3(Vector3.sub(ui.getMainCamera().getCamera(), vSide)); break;
                         case KeyEvent.VK_LEFT: ui.getMainCamera().updateYaw(-0.05f); break;
                         case KeyEvent.VK_RIGHT: ui.getMainCamera().updateYaw(0.05f); break;
-                        case KeyEvent.VK_UP: ui.getMainCamera().moveCameraY(0.1f); break;
-                        case KeyEvent.VK_DOWN: ui.getMainCamera().moveCameraY(-0.1f); break;
+                        case KeyEvent.VK_UP: ui.getMainCamera().getCamera().setVector3(Vector3.add(ui.getMainCamera().getCamera(), vUp)); break;
+                        case KeyEvent.VK_DOWN: ui.getMainCamera().getCamera().setVector3(Vector3.sub(ui.getMainCamera().getCamera(), vUp)); break;
                     }
                 }
             }
