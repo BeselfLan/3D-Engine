@@ -34,8 +34,8 @@ public class UI {
     public UI(GameManager gm) {
         this.gm = gm;
         createMainField();
-        spaceShip = new Cube(new Vector3(0, 1, 0), 1, lc);
-//        spaceShip.getObj("res/mountains.obj");
+//        spaceShip = new Cube(new Vector3(0, 1, 0), 1, lc);
+        spaceShip.getObj("res/VideoShip.obj");
 //        spaceShip.projectObject(vCamera, fYaw,0.0f);
         rotationTimer.start();
         window.setVisible(true);

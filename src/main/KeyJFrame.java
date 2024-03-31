@@ -40,8 +40,8 @@ public class KeyJFrame extends JFrame implements KeyListener{
 //                System.out.println("--------------");
                 for (int keyCode : pressedKeys) {
 //                    System.out.println(keyCode);
-                    Vector3 vForward = Vector3.mul(ui.getMainCamera().getLookDir(), 1.0f);
-                    Vector3 vSide = Vector3.mul(ui.getMainCamera().getSideDir(), 1.0f);
+                    Vector3 vForward = Vector3.mul(ui.getMainCamera().getLookDir(), 0.1f);
+                    Vector3 vSide = Vector3.mul(ui.getMainCamera().getSideDir(), 0.1f);
                     switch(keyCode) {
                         case KeyEvent.VK_W: ui.getMainCamera().getCamera().setVector3(Vector3.add(ui.getMainCamera().getCamera(), vForward)); break;
                         case KeyEvent.VK_S: ui.getMainCamera().getCamera().setVector3(Vector3.sub(ui.getMainCamera().getCamera(), vForward)); break;
@@ -49,8 +49,8 @@ public class KeyJFrame extends JFrame implements KeyListener{
                         case KeyEvent.VK_D: ui.getMainCamera().getCamera().setVector3(Vector3.sub(ui.getMainCamera().getCamera(), vSide)); break;
                         case KeyEvent.VK_LEFT: ui.getMainCamera().updateYaw(-0.05f); break;
                         case KeyEvent.VK_RIGHT: ui.getMainCamera().updateYaw(0.05f); break;
-                        case KeyEvent.VK_UP: ui.getMainCamera().moveCameraY(1.0f); break;
-                        case KeyEvent.VK_DOWN: ui.getMainCamera().moveCameraY(-1.0f); break;
+                        case KeyEvent.VK_UP: ui.getMainCamera().moveCameraY(0.1f); break;
+                        case KeyEvent.VK_DOWN: ui.getMainCamera().moveCameraY(-0.1f); break;
                     }
                 }
             }

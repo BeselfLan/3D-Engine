@@ -1,5 +1,8 @@
 package Containers;
 
+import main.Obj;
+// https://www.youtube.com/watch?v=chScv-vaXPo
+
 public class Vector3 {
     private float x, y, z, w; // w value only for conventional 4x4 matrix multiplication
 
@@ -85,6 +88,7 @@ public class Vector3 {
     public static float dotProduct(Vector3 v1, Vector3 v2) {
         return v1.x*v2.x + v1.y*v2.y + v1.z * v2.z;
     }
+    public static float dotProductSelf(Vector3 v1) { return dotProduct(v1, v1); }
     public static float Vector_Length(Vector3 v) {
         return (float) Math.sqrt(dotProduct(v, v));
     }

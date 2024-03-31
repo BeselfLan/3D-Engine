@@ -100,8 +100,14 @@ public class Obj {
             if (Triangle.isTriangleVisible(normal, triTranslated, vCamera.getCamera())) {
 
                 // Illumination
-                Vector3 light_direction = new Vector3(0.0f, 0.0f, -1.0f);
+                Vector3 light_direction = vCamera.getLookDir();
+//                Vector3 light_direction = new Vector3(0.0f, 0.0f, -1.0f);
                 Triangle.illuminateTriangle(light_direction, normal, triViewed);
+
+                if (collisionCheck(vCamera.getCamera(), triTranslated, 0.1f)) {
+                    triViewed.setColor(Color.RED);
+//                        System.out.println("collision!");
+                }
 
                 // Convert world space into view space
                 triViewed.setP1(Mat4x4.multiplyMatrix(triTranslated.getP1(), vCamera.getMatView()));
@@ -115,7 +121,6 @@ public class Obj {
 //                System.out.printf("%d\n", nClippedTriangles);
                 for (int i = 0; i < nClippedTriangles; i++) {
 //                    clipped[n].printTriangle();
-
                     // Project triangle from 3D to 2D (screen)
                     projectTriangle(clipped[i]);
 
@@ -199,5 +204,34 @@ public class Obj {
         tri.setP1(Mat4x4.multiplyMatrix(tri.getP1(), pm));
         tri.setP2(Mat4x4.multiplyMatrix(tri.getP2(), pm));
         tri.setP3(Mat4x4.multiplyMatrix(tri.getP3(), pm));
+    }
+
+    public static boolean collisionCheck(Vector3 point, Triangle tri, float thresh) {
+//        System.out.printf("%f %f\n", distToTriangle(point, tri.getP1(), tri.getP2(), tri.getP3()), thresh);
+        if (distToTriangle(point, tri.getP1(), tri.getP2(), tri.getP3()) <= thresh) {
+            return true;
+        }
+        return false;
+    }
+    private static float distToTriangle(Vector3 point, Vector3 a, Vector3 b, Vector3 c) {
+        Vector3 ba = Vector3.sub(b, a);
+        Vector3 pa = Vector3.sub(point, a);
+        Vector3 cb = Vector3.sub(c, b);
+        Vector3 pb = Vector3.sub(point, b);
+        Vector3 ac = Vector3.sub(a, c);
+        Vector3 pc = Vector3.sub(point, c);
+        Vector3 nor = Vector3.crossProduct(ba, ac);
+
+        if (Math.signum(Vector3.dotProduct(Vector3.crossProduct(ba, nor), pa))
+                + Math.signum(Vector3.dotProduct(Vector3.crossProduct(cb, nor), pb))
+                + Math.signum(Vector3.dotProduct(Vector3.crossProduct(ac, nor), pc)) < 2.0f) {
+            return Math.min(Math.min(Vector3.dotProductSelf(Vector3.sub(Vector3.mul(ba, constrain(Vector3.dotProduct(ba, pa) / Vector3.dotProductSelf(ba), 0.0f, 1.0f)), pa)),
+                            Vector3.dotProductSelf(Vector3.sub(Vector3.mul(cb, constrain(Vector3.dotProduct(cb, pb) / Vector3.dotProductSelf(cb), 0.0f, 1.0f)), pb))),
+                    Vector3.dotProductSelf(Vector3.sub(Vector3.mul(ac, constrain(Vector3.dotProduct(ac, pc) / Vector3.dotProductSelf(ac), 0.0f, 1.0f)), pc)));
+        }
+        return Vector3.dotProduct(nor, pa) * Vector3.dotProduct(nor, pa)/Vector3.dotProductSelf(nor);
+    }
+    private static float constrain(float n, float upper, float lower) {
+        return Math.max(lower, Math.min(upper, n));
     }
 }
