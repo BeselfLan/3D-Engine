@@ -78,40 +78,4 @@ public class Vector3 {
         setY(v1.getY());
         setZ(v1.getZ());
     }
-    public static Vector3 add(Vector3 v1, Vector3 v2) {
-        return new Vector3(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
-    }
-    public static Vector3 sub(Vector3 v1, Vector3 v2) {
-        return new Vector3(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
-    }
-    public static Vector3 mul(Vector3 v1, float k) { return new Vector3(v1.x * k, v1.y * k, v1.z * k); }
-    public static float dotProduct(Vector3 v1, Vector3 v2) {
-        return v1.x*v2.x + v1.y*v2.y + v1.z * v2.z;
-    }
-    public static float dotProductSelf(Vector3 v1) { return dotProduct(v1, v1); }
-    public static float Vector_Length(Vector3 v) {
-        return (float) Math.sqrt(dotProduct(v, v));
-    }
-    public static Vector3 normalize(Vector3 v) {
-        float l = Vector_Length(v);
-        return new Vector3(v.x / l, v.y / l, v.z / l);
-    }
-    public static Vector3 crossProduct(Vector3 v1, Vector3 v2) {
-        Vector3 v = new Vector3();
-        v.x = v1.y * v2.z - v1.z * v2.y;
-        v.y = v1.z * v2.x - v1.x * v2.z;
-        v.z = v1.x * v2.y - v1.y * v2.x;
-        return v;
-    }
-    // return where line intersects plane (use point on plane and normal of plane to define plane equation)
-    public static Vector3 vectorIntersectPlane(Vector3 plane_p, Vector3 plane_n, Vector3 lineStart, Vector3 lineEnd) {
-        plane_n.setVector3(normalize(plane_n));
-        float plane_d = -dotProduct(plane_n, plane_p);
-        float ad = dotProduct(lineStart, plane_n);
-        float bd = dotProduct(lineEnd, plane_n);
-        float t = (-(plane_d) - ad) / (bd - ad);
-        Vector3 lineStartToEnd = sub(lineEnd, lineStart);
-        Vector3 lineToIntersect = mul(lineStartToEnd, t);
-        return add(lineStart, lineToIntersect);
-    }
 }

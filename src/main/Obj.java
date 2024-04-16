@@ -1,8 +1,8 @@
 package main;
 
+import Containers.Mat4x4;
 import Containers.Triangle;
 import Containers.Vector3;
-import MathStuff.Mat4x4;
 
 import javax.swing.*;
 import java.awt.*;
@@ -102,15 +102,15 @@ public class Obj {
             triTranslated.translateZ(8.0f);
 
             // Calculate normal of each triangle to determine if we should render them
-            Vector3 normal = Triangle.findNormal(triTranslated);
+            Vector3 normal = MathStuff.findNormal(triTranslated);
             // if (normal.z < 0) {
             // find if normal is visible relative to camera (dot product)
-            if (Triangle.isTriangleVisible(normal, triTranslated, vCamera.getCamera())) {
+            if (MathStuff.isTriangleVisible(normal, triTranslated, vCamera.getCamera())) {
 
                 // Illumination
                 Vector3 light_direction = vCamera.getLookDir();
 //                Vector3 light_direction = new Vector3(0.0f, 0.0f, -1.0f);
-                Triangle.illuminateTriangle(light_direction, normal, triViewed);
+                MathStuff.illuminateTriangle(light_direction, normal, triViewed);
 
                 if (collisionCheck(vCamera.getCamera(), triTranslated, 0.1f)) {
                     collisionCycle = true;
@@ -118,14 +118,14 @@ public class Obj {
                 }
 
                 // Convert world space into view space
-                triViewed.setP1(Mat4x4.multiplyMatrix(triTranslated.getP1(), vCamera.getMatView()));
-                triViewed.setP2(Mat4x4.multiplyMatrix(triTranslated.getP2(), vCamera.getMatView()));
-                triViewed.setP3(Mat4x4.multiplyMatrix(triTranslated.getP3(), vCamera.getMatView()));
+                triViewed.setP1(MathStuff.multiplyMatrix(triTranslated.getP1(), vCamera.getMatView()));
+                triViewed.setP2(MathStuff.multiplyMatrix(triTranslated.getP2(), vCamera.getMatView()));
+                triViewed.setP3(MathStuff.multiplyMatrix(triTranslated.getP3(), vCamera.getMatView()));
 
                 // clip viewed triangle against near plane, this can form an additional 2 triangles
                 Triangle[] clipped = new Triangle[2];
                 clipped[0] = new Triangle(); clipped[1] = new Triangle();
-                int nClippedTriangles = Triangle.triangleClipAgainstPlane(new Vector3(0.0f, 0.0f, 0.1f), new Vector3(0.0f, 0.0f, 1.0f), triViewed, clipped[0], clipped[1]);
+                int nClippedTriangles = MathStuff.triangleClipAgainstPlane(new Vector3(0.0f, 0.0f, 0.1f), new Vector3(0.0f, 0.0f, 1.0f), triViewed, clipped[0], clipped[1]);
 //                System.out.printf("%d\n", nClippedTriangles);
                 for (int i = 0; i < nClippedTriangles; i++) {
 //                    clipped[n].printTriangle();
@@ -176,10 +176,10 @@ public class Obj {
                     clipped[1] = new Triangle();
 
                     switch(p) {
-                        case 0: nTrisToAdd = Triangle.triangleClipAgainstPlane(new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 1.0f, 0.0f), test, clipped[0], clipped[1]); break;
-                        case 1: nTrisToAdd = Triangle.triangleClipAgainstPlane(new Vector3(0.0f, (float)SHEIGHT-1, 0.0f), new Vector3(0.0f, -1.0f, 0.0f), test, clipped[0], clipped[1]); break;
-                        case 2: nTrisToAdd = Triangle.triangleClipAgainstPlane(new Vector3(0.0f, 0.0f, 0.0f), new Vector3(1.0f, 0.0f, 0.0f), test, clipped[0], clipped[1]); break;
-                        case 3: nTrisToAdd = Triangle.triangleClipAgainstPlane(new Vector3((float)SWIDTH-1, 0.0f, 0.0f), new Vector3(-1.0f, 0.0f, 0.0f), test, clipped[0], clipped[1]); break;
+                        case 0: nTrisToAdd = MathStuff.triangleClipAgainstPlane(new Vector3(0.0f, 0.0f, 0.0f), new Vector3(0.0f, 1.0f, 0.0f), test, clipped[0], clipped[1]); break;
+                        case 1: nTrisToAdd = MathStuff.triangleClipAgainstPlane(new Vector3(0.0f, (float)SHEIGHT-1, 0.0f), new Vector3(0.0f, -1.0f, 0.0f), test, clipped[0], clipped[1]); break;
+                        case 2: nTrisToAdd = MathStuff.triangleClipAgainstPlane(new Vector3(0.0f, 0.0f, 0.0f), new Vector3(1.0f, 0.0f, 0.0f), test, clipped[0], clipped[1]); break;
+                        case 3: nTrisToAdd = MathStuff.triangleClipAgainstPlane(new Vector3((float)SWIDTH-1, 0.0f, 0.0f), new Vector3(-1.0f, 0.0f, 0.0f), test, clipped[0], clipped[1]); break;
 
                     }
                     for (int w = 0; w < nTrisToAdd; w++) {
@@ -192,7 +192,7 @@ public class Obj {
 //                lc.addLine((int)t.getP1().getX(), (int)t.getP1().getY(), (int)t.getP2().getX(), (int)t.getP2().getY());
 //                lc.addLine((int)t.getP2().getX(), (int)t.getP2().getY(), (int)t.getP3().getX(), (int)t.getP3().getY());
 //                lc.addLine((int)t.getP3().getX(), (int)t.getP3().getY(), (int)t.getP1().getX(), (int)t.getP1().getY());
-                Triangle.drawTriangles(t, lc);
+            	MathStuff.drawTriangles(t, lc);
             }
         }
     }
@@ -204,15 +204,15 @@ public class Obj {
             case 'z': rotationMatrix.rotationZ4x4(fTheta); break;
             default : System.out.printf("Given rotation axis '%c' doesn't exist!", axis); break;
         }
-        tri.setP1(Mat4x4.multiplyMatrix(tri.getP1(), rotationMatrix));
-        tri.setP2(Mat4x4.multiplyMatrix(tri.getP2(), rotationMatrix));
-        tri.setP3(Mat4x4.multiplyMatrix(tri.getP3(), rotationMatrix));
+        tri.setP1(MathStuff.multiplyMatrix(tri.getP1(), rotationMatrix));
+        tri.setP2(MathStuff.multiplyMatrix(tri.getP2(), rotationMatrix));
+        tri.setP3(MathStuff.multiplyMatrix(tri.getP3(), rotationMatrix));
     }
 
     public void projectTriangle(Triangle tri) {
-        tri.setP1(Mat4x4.multiplyMatrix(tri.getP1(), pm));
-        tri.setP2(Mat4x4.multiplyMatrix(tri.getP2(), pm));
-        tri.setP3(Mat4x4.multiplyMatrix(tri.getP3(), pm));
+        tri.setP1(MathStuff.multiplyMatrix(tri.getP1(), pm));
+        tri.setP2(MathStuff.multiplyMatrix(tri.getP2(), pm));
+        tri.setP3(MathStuff.multiplyMatrix(tri.getP3(), pm));
     }
 
     public boolean collisionCheck(Vector3 point, Triangle tri, float thresh) {
@@ -224,22 +224,22 @@ public class Obj {
         return false;
     }
     private static float distToTriangle(Vector3 point, Vector3 a, Vector3 b, Vector3 c) {
-        Vector3 ba = Vector3.sub(b, a);
-        Vector3 pa = Vector3.sub(point, a);
-        Vector3 cb = Vector3.sub(c, b);
-        Vector3 pb = Vector3.sub(point, b);
-        Vector3 ac = Vector3.sub(a, c);
-        Vector3 pc = Vector3.sub(point, c);
-        Vector3 nor = Vector3.crossProduct(ba, ac);
+        Vector3 ba = MathStuff.sub(b, a);
+        Vector3 pa = MathStuff.sub(point, a);
+        Vector3 cb = MathStuff.sub(c, b);
+        Vector3 pb = MathStuff.sub(point, b);
+        Vector3 ac = MathStuff.sub(a, c);
+        Vector3 pc = MathStuff.sub(point, c);
+        Vector3 nor = MathStuff.crossProduct(ba, ac);
 
-        if (Math.signum(Vector3.dotProduct(Vector3.crossProduct(ba, nor), pa))
-                + Math.signum(Vector3.dotProduct(Vector3.crossProduct(cb, nor), pb))
-                + Math.signum(Vector3.dotProduct(Vector3.crossProduct(ac, nor), pc)) < 2.0f) {
-            return Math.min(Math.min(Vector3.dotProductSelf(Vector3.sub(Vector3.mul(ba, constrain(Vector3.dotProduct(ba, pa) / Vector3.dotProductSelf(ba), 0.0f, 1.0f)), pa)),
-                            Vector3.dotProductSelf(Vector3.sub(Vector3.mul(cb, constrain(Vector3.dotProduct(cb, pb) / Vector3.dotProductSelf(cb), 0.0f, 1.0f)), pb))),
-                    Vector3.dotProductSelf(Vector3.sub(Vector3.mul(ac, constrain(Vector3.dotProduct(ac, pc) / Vector3.dotProductSelf(ac), 0.0f, 1.0f)), pc)));
+        if (Math.signum(MathStuff.dotProduct(MathStuff.crossProduct(ba, nor), pa))
+                + Math.signum(MathStuff.dotProduct(MathStuff.crossProduct(cb, nor), pb))
+                + Math.signum(MathStuff.dotProduct(MathStuff.crossProduct(ac, nor), pc)) < 2.0f) {
+            return Math.min(Math.min(MathStuff.dotProductSelf(MathStuff.sub(MathStuff.mul(ba, constrain(MathStuff.dotProduct(ba, pa) / MathStuff.dotProductSelf(ba), 0.0f, 1.0f)), pa)),
+            		MathStuff.dotProductSelf(MathStuff.sub(MathStuff.mul(cb, constrain(MathStuff.dotProduct(cb, pb) / MathStuff.dotProductSelf(cb), 0.0f, 1.0f)), pb))),
+            		MathStuff.dotProductSelf(MathStuff.sub(MathStuff.mul(ac, constrain(MathStuff.dotProduct(ac, pc) / MathStuff.dotProductSelf(ac), 0.0f, 1.0f)), pc)));
         }
-        return Vector3.dotProduct(nor, pa) * Vector3.dotProduct(nor, pa)/Vector3.dotProductSelf(nor);
+        return MathStuff.dotProduct(nor, pa) * MathStuff.dotProduct(nor, pa)/MathStuff.dotProductSelf(nor);
     }
     private static float constrain(float n, float upper, float lower) {
         return Math.max(lower, Math.min(upper, n));

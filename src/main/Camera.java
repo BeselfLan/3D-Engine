@@ -1,8 +1,8 @@
 package main;
 
+import Containers.Mat4x4;
 import Containers.Triangle;
 import Containers.Vector3;
-import MathStuff.Mat4x4;
 
 public class Camera {
 
@@ -58,22 +58,22 @@ public class Camera {
         vUp.setVector3(new Vector3(0, 1, 0));
         vTarget.setVector3(new Vector3(0, 0, 1));
         matCameraRot.rotationY4x4(fYaw); // rotation matrix to rotate camera around y axis
-        vLookDir.setVector3(Mat4x4.multiplyMatrix(vTarget, matCameraRot)); // unit vector rotated around orgin using rotation matrix
+        vLookDir.setVector3(MathStuff.multiplyMatrix(vTarget, matCameraRot)); // unit vector rotated around orgin using rotation matrix
 
         matCameraRot.rotationY4x4(fYaw - PI/2);
-        vSideDir.setVector3(Mat4x4.multiplyMatrix(vTarget, matCameraRot));
+        vSideDir.setVector3(MathStuff.multiplyMatrix(vTarget, matCameraRot));
 
 //        System.out.printf("%f %f %f\n", vLookDir.getX(), vLookDir.getY(), vLookDir.getZ());
-        vTarget.setVector3(Vector3.add(camera, vLookDir)); // offset camera rotation to current camera location
-        matCamera.setMatrix(Mat4x4.matrix_pointAt(camera, vTarget, vUp));
+        vTarget.setVector3(MathStuff.add(camera, vLookDir)); // offset camera rotation to current camera location
+        matCamera.setMatrix(MathStuff.matrix_pointAt(camera, vTarget, vUp));
         // make view matrix from camera
-        matView.setMatrix(Mat4x4.quickInverse(matCamera));
+        matView.setMatrix(MathStuff.quickInverse(matCamera));
 //        matView.printMatrix();
     }
 
     public static Vector3 projectToPlane(Vector3 v, Triangle tri) {
-        Vector3 n = Triangle.findNormal(tri);
-        Vector3 vProjN = Vector3.mul(n, (float) (Vector3.dotProduct(v, n) / Math.pow(Vector3.dotProductSelf(n), 2.0)));
-        return Vector3.sub(v, vProjN);
+        Vector3 n = MathStuff.findNormal(tri);
+        Vector3 vProjN = MathStuff.mul(n, (float) (MathStuff.dotProduct(v, n) / Math.pow(MathStuff.dotProductSelf(n), 2.0)));
+        return MathStuff.sub(v, vProjN);
     }
 }
