@@ -6,10 +6,9 @@ import Containers.Vector3;
 
 public class Camera {
 
-    private Vector3 camera, vTarget, vLookDir, vUp, vSideDir;
-    private Mat4x4 matView, matCamera, matCameraRot;
+    private final Vector3 camera, vTarget, vLookDir, vUp, vSideDir;
+    private final Mat4x4 matView, matCamera, matCameraRot;
     private float fYaw;
-    private final float PI = 3.14159f;
 
     public Camera() {
         camera = new Vector3();
@@ -60,7 +59,7 @@ public class Camera {
         matCameraRot.rotationY4x4(fYaw); // rotation matrix to rotate camera around y axis
         vLookDir.setVector3(MathStuff.multiplyMatrix(vTarget, matCameraRot)); // unit vector rotated around orgin using rotation matrix
 
-        matCameraRot.rotationY4x4(fYaw - PI/2);
+        matCameraRot.rotationY4x4(fYaw - MathStuff.PI()/2);
         vSideDir.setVector3(MathStuff.multiplyMatrix(vTarget, matCameraRot));
 
 //        System.out.printf("%f %f %f\n", vLookDir.getX(), vLookDir.getY(), vLookDir.getZ());

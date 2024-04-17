@@ -6,8 +6,8 @@ import java.util.LinkedList;
 // https://stackoverflow.com/questions/5801734/how-to-draw-lines-in-java
 
 public class LinesComponent extends JComponent {
-    private final LinkedList<Shape> lines = new LinkedList<Shape>();
-    private final LinkedList<Shape> triangles = new LinkedList<Shape>();
+    private final LinkedList<Shape> lines = new LinkedList<>();
+    private final LinkedList<Shape> triangles = new LinkedList<>();
 
     private static class Shape {
         final int x1, y1, x2, y2, x3, y3;
@@ -60,8 +60,8 @@ public class LinesComponent extends JComponent {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         for (Shape triangle : triangles) {
-            int x[] = {triangle.x1, triangle.x2, triangle.x3}; // change 0,0 from top left to bottom right
-            int y[] = {triangle.y1, triangle.y2,  triangle.y3};
+            int[] x = {triangle.x1, triangle.x2, triangle.x3}; // change 0,0 from top left to bottom right
+            int[] y = {triangle.y1, triangle.y2,  triangle.y3};
             g.setColor(triangle.color);
             g.fillPolygon(x, y, 3);
         }

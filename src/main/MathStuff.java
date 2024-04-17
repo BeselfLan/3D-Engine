@@ -5,11 +5,15 @@ import java.awt.Color;
 import Containers.*;
 
 public class MathStuff {
-	
+    private static final float PI = 3.14159f;
 	
 	public MathStuff() {
 		
 	}
+    public static float PI() {
+        return PI;
+    }
+
 	// MATRIX MATH
     public static Vector3 multiplyMatrix(Vector3 i, Mat4x4 mat) {
         Vector3 o = new Vector3();
