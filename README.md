@@ -8,6 +8,16 @@ This project was an experiement with 3D graphics and how it functioned.
 The github includes the source code, to test the engine download the .rar file in the latest
 release.
 
+Controls are:
+w - move forward
+A - move left
+S - move back
+D - move right
+[left arrow] - turn left
+[right arrow] - turn right
+[up arrow] - move up
+[down arrow] - move down
+
 Have fun!
 
 
